@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta - Sistema de Controle de Clientes e Veículos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .search-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-filters .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .results-table {
+            margin-top: 30px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-buttons button {
+            padding: 5px 10px;
+            font-size: 0.9rem;
+        }
+        
+        .warranty-expired {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .warranty-ending {
+            color: #f39c12;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <header class="bg-primary text-white p-3 rounded mb-4 shadow">
+            <h1 class="text-center mb-3">Sistema de Controle de Clientes e Veículos</h1>
+            <nav>
+                <ul class="nav nav-pills justify-content-center">
+                    <li class="nav-item"><a href="index.html" class="nav-link text-white"><i class="fas fa-home me-2"></i> Início</a></li>
+                    <li class="nav-item"><a href="cadastro.html" class="nav-link text-white"><i class="fas fa-user-plus me-2"></i> Cadastro</a></li>
+                    <li class="nav-item"><a href="consulta.html" class="nav-link active"><i class="fas fa-search me-2"></i> Consulta</a></li>
+                    <li class="nav-item"><a href="lista-servicos.html" class="nav-link text-white"><i class="fas fa-tools me-2"></i> Serviços</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="form-container">
+                <div class="d-flex align-items-center mb-3">
+                    <button onclick="window.history.back()" class="btn btn-secondary me-2">
+                        <i class="fas fa-arrow-left me-1"></i>Voltar
+                    </button>
+                    <h2 class="mb-0">Consulta de Clientes e Veículos</h2>
+                </div>
+                
+                <div class="search-filters">
+                    <div class="form-group">
+                        <label for="searchType">Buscar por</label>
+                        <select id="searchType">
+                            <option value="plate">Placa</option>
+                            <option value="client">Cliente</option>
+                            <option value="warranty">Garantias</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="searchTerm">Termo de busca</label>
+                        <input type="text" id="searchTerm" placeholder="Digite aqui...">
+                    </div>
+                    
+                    <div class="form-group" style="flex: 0.5;">
+                        <label>&nbsp;</label>
+                        <button id="searchButton"><i class="fas fa-search"></i> Buscar</button>
+                    </div>
+                </div>
+                
+                <div class="results-table">
+                    <h3>Resultados da Busca</h3>
+                    <table id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Placa</th>
+                                <th>Modelo</th>
+                                <th>Último Serviço</th>
+                                <th>Garantia até</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Resultados serão inseridos aqui via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="mt-4 text-center text-muted">
+            <p>&copy; 2023 Sistema de Controle de Clientes e Veículos</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // Código específico para a página de consulta
+        function initConsulta() {
+            const searchTypeSelect = document.getElementById('searchType');
+            const searchTermInput = document.getElementById('searchTerm');
+            const searchButton = document.getElementById('searchButton');
+            const resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+            
+            // Função para realizar a busca
+            function performSearch() {
+                const searchType = searchTypeSelect.value;
+                const searchTerm = searchTermInput.value.trim();
+                
+                // Limpa a tabela de resultados
+                resultsTable.innerHTML = '';
+                
+                if (!searchTerm && searchType !== 'warranty') {
+                    alert('Por favor, digite um termo de busca.');
+                    return;
+                }
+                
+                const data = loadData();
+                let results = [];
+                
+                switch (searchType) {
+                    case 'plate':
+                        // Busca por placa
+                        results = data.vehicles.filter(v => 
+                            v.plate.toLowerCase().includes(searchTerm.toLowerCase())
+                        );
+                        break;
+                        
+                    case 'client':
+                        // Busca por nome do cliente
+                        const matchingClients = data.clients.filter(c => 
+                            c.name.toLowerCase().includes(searchTerm.toLowerCase())
+                        );
+                        
+                        // Obtém os veículos desses clientes
+                        matchingClients.forEach(client => {
+                            const clientVehicles = data.vehicles.filter(v => v.clientId === client.id);
+                            results = [...results, ...clientVehicles];
+                        });
+                        break;
+                        
+                    case 'warranty':
+                        // Busca por garantias (próximas do vencimento ou vencidas)
+                        const servicesWithWarranty = data.services.filter(s => s.warranty);
+                        
+                        // Se houver um termo de busca, filtra por dias restantes
+                        if (searchTerm) {
+                            const days = parseInt(searchTerm);
+                            if (!isNaN(days)) {
+                                const today = new Date();
+                                servicesWithWarranty.forEach(service => {
+                                    const warranty = new Date(service.warranty);
+                                    const diffTime = warranty - today;
+                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                    
+                                    if (diffDays <= days && diffDays > -30) { // Mostra garantias vencidas até 30 dias
+                                        const vehicle = data.vehicles.find(v => v.id === service.vehicleId);
+                                        if (vehicle && !results.includes(vehicle)) {
+                                            results.push(vehicle);
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            // Sem termo de busca, mostra todas as garantias próximas (30 dias) ou recém vencidas
+                            servicesWithWarranty.forEach(service => {
+                                if (isWarrantyEnding(service.warranty) || 
+                                    (isWarrantyExpired(service.warranty) && new Date(service.warranty) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))) {
+                                    const vehicle = data.vehicles.find(v => v.id === service.vehicleId);
+                                    if (vehicle && !results.includes(vehicle)) {
+                                        results.push(vehicle);
+                                    }
+                                }
+                            });
+                        }
+                        break;
+                }
+                
+                // Exibe os resultados
+                if (results.length === 0) {
+                    const row = resultsTable.insertRow();
+                    const cell = row.insertCell();
+                    cell.colSpan = 6;
+                    cell.textContent = 'Nenhum resultado encontrado.';
+                    cell.style.textAlign = 'center';
+                    return;
+                }
+                
+                results.forEach(vehicle => {
+                    const client = data.clients.find(c => c.id === vehicle.clientId);
+                    
+                    // Encontra o serviço mais recente para este veículo
+                    const vehicleServices = data.services
+                        .filter(s => s.vehicleId === vehicle.id)
+                        .sort((a, b) => new Date(b.date) - new Date(a.date));
+                    
+                    const lastService = vehicleServices.length > 0 ? vehicleServices[0] : null;
+                    
+                    const row = resultsTable.insertRow();
+                    
+                    // Cliente
+                    const clientCell = row.insertCell();
+                    clientCell.textContent = client ? client.name : 'Cliente não encontrado';
+                    
+                    // Placa
+                    const plateCell = row.insertCell();
+                    plateCell.textContent = vehicle.plate;
+                    
+                    // Modelo
+                    const modelCell = row.insertCell();
+                    modelCell.textContent = vehicle.model + (vehicle.year ? ` (${vehicle.year})` : '');
+                    
+                    // Último serviço
+                    const serviceCell = row.insertCell();
+                    serviceCell.textContent = lastService ? 
+                        `${lastService.description} (${formatDate(lastService.date)})` : 
+                        'Nenhum serviço registrado';
+                    
+                    // Garantia
+                    const warrantyCell = row.insertCell();
+                    if (lastService && lastService.warranty) {
+                        warrantyCell.textContent = formatDate(lastService.warranty);
+                        
+                        if (isWarrantyExpired(lastService.warranty)) {
+                            warrantyCell.classList.add('warranty-expired');
+                            warrantyCell.textContent += ' (Vencida)';
+                        } else if (isWarrantyEnding(lastService.warranty)) {
+                            warrantyCell.classList.add('warranty-ending');
+                            warrantyCell.textContent += ' (Próxima)';
+                        }
+                    } else {
+                        warrantyCell.textContent = 'N/A';
+                    }
+                    
+                    // Ações
+                    const actionsCell = row.insertCell();
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'action-buttons';
+                    
+                    // Botão de detalhes
+                    const detailsBtn = document.createElement('button');
+                    detailsBtn.className = 'btn btn-sm btn-info text-white';
+                    detailsBtn.innerHTML = '<i class="fas fa-info-circle"></i> Detalhes';
+                    detailsBtn.addEventListener('click', function() {
+                        window.location.href = `detalhes.html?id=${vehicle.id}`;
+                    });
+                    actionsDiv.appendChild(detailsBtn);
+                    
+                    // Botão de novo serviço
+                    const serviceBtn = document.createElement('button');
+                    serviceBtn.className = 'btn btn-sm btn-primary';
+                    serviceBtn.innerHTML = '<i class="fas fa-tools"></i> Serviço';
+                    serviceBtn.addEventListener('click', function() {
+                        window.location.href = `servicos.html?vehicle=${vehicle.id}`;
+                    });
+                    actionsDiv.appendChild(serviceBtn);
+                    
+                    // Botão de editar cliente
+                    const editClientBtn = document.createElement('button');
+                    editClientBtn.className = 'btn btn-sm btn-warning';
+                    editClientBtn.innerHTML = '<i class="fas fa-user-edit"></i> Editar';
+                    editClientBtn.addEventListener('click', function() {
+                        window.location.href = `cadastro.html?editClient=${client.id}`;
+                    });
+                    actionsDiv.appendChild(editClientBtn);
+                    
+                    actionsCell.appendChild(actionsDiv);
+                });
+            }
+            
+            // Evento de clique no botão de busca
+            searchButton.addEventListener('click', performSearch);
+            
+            // Evento de pressionar Enter no campo de busca
+            searchTermInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            // Atualiza o placeholder do campo de busca conforme o tipo selecionado
+            searchTypeSelect.addEventListener('change', function() {
+                switch (this.value) {
+                    case 'plate':
+                        searchTermInput.placeholder = 'Digite a placa...';
+                        break;
+                    case 'client':
+                        searchTermInput.placeholder = 'Digite o nome do cliente...';
+                        break;
+                    case 'warranty':
+                        searchTermInput.placeholder = 'Digite dias para vencimento (opcional)...';
+                        break;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

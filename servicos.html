@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviços - Sistema de Controle de Clientes e Veículos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container py-4">
+        <header class="bg-primary text-white p-3 rounded mb-4 shadow">
+            <h1 class="text-center mb-3">Sistema de Controle de Clientes e Veículos</h1>
+            <nav>
+                <ul class="nav nav-pills justify-content-center">
+                    <li class="nav-item"><a href="index.html" class="nav-link text-white"><i class="fas fa-home me-2"></i> Início</a></li>
+                    <li class="nav-item"><a href="cadastro.html" class="nav-link text-white"><i class="fas fa-user-plus me-2"></i> Cadastro</a></li>
+                    <li class="nav-item"><a href="consulta.html" class="nav-link text-white"><i class="fas fa-search me-2"></i> Consulta</a></li>
+                    <li class="nav-item"><a href="lista-servicos.html" class="nav-link text-white"><i class="fas fa-tools me-2"></i> Serviços</a></li>
+                    <li class="nav-item"><a href="lista-veiculos.html" class="nav-link text-white"><i class="fas fa-car me-2"></i> Veículos</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <div>
+                        <button onclick="window.history.back()" class="btn btn-secondary me-2">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar
+                        </button>
+                        <h2 class="card-title d-inline-block mb-0">Registro de Serviço</h2>
+                    </div>
+                    <a href="lista-servicos.html" class="btn btn-primary">
+                        <i class="fas fa-list me-2"></i>Lista de Serviços
+                    </a>
+                </div>
+                <div class="card-body">
+                
+                    <div class="card mb-4" id="vehicleInfo">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Informações do Veículo</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <span class="fw-bold text-secondary">Cliente:</span>
+                                    <span class="fs-5" id="clientName">-</span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <span class="fw-bold text-secondary">Placa:</span>
+                                    <span class="fs-5" id="vehiclePlate">-</span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <span class="fw-bold text-secondary">Modelo:</span>
+                                    <span class="fs-5" id="vehicleModel">-</span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <span class="fw-bold text-secondary">Ano:</span>
+                                    <span class="fs-5" id="vehicleYear">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="mb-4" id="vehicleSelectContainer">
+                        <h5 class="mb-3">Selecione um Veículo</h5>
+                        <div class="mb-3">
+                            <label for="vehicleSelect" class="form-label">Veículo (por placa)</label>
+                            <select id="vehicleSelect" class="form-select">
+                                <option value="">Selecione um veículo</option>
+                                <!-- Opções serão preenchidas via JavaScript -->
+                            </select>
+                        </div>
+                    </div>
+                
+                <form id="serviceForm" class="needs-validation" novalidate>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="serviceDate" class="form-label">Data do Serviço</label>
+                            <input type="date" id="serviceDate" name="serviceDate" class="form-control" required>
+                            <div class="invalid-feedback">
+                                Por favor, informe a data do serviço.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="serviceWarranty" class="form-label">Data de Validade da Garantia</label>
+                            <input type="date" id="serviceWarranty" name="serviceWarranty" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="serviceDescription" class="form-label">Descrição do Serviço</label>
+                        <input type="text" id="serviceDescription" name="serviceDescription" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Por favor, forneça uma descrição para o serviço.
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="serviceValue" class="form-label">Valor do Serviço (R$)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="text" id="serviceValue" name="serviceValue" class="form-control" placeholder="0,00" required>
+                                <div class="invalid-feedback">
+                                    Por favor, informe o valor do serviço.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="serviceType" class="form-label">Tipo de Serviço</label>
+                            <select id="serviceType" name="serviceType" class="form-select">
+                                <option value="instalacao">Instalação</option>
+                                <option value="manutencao">Manutenção</option>
+                                <option value="reparo">Reparo</option>
+                                <option value="substituicao">Substituição</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="serviceDetails" class="form-label">Detalhes do Serviço</label>
+                        <textarea id="serviceDetails" name="serviceDetails" class="form-control" rows="5"></textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="reset" class="btn btn-secondary me-md-2">Limpar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Registrar Serviço
+                        </button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </main>
+
+        <footer class="mt-4 text-center text-muted">
+            <p>&copy; 2023 Sistema de Controle de Clientes e Veículos</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/fix-modals.js"></script>
+    <script src="js/fix-modals.js"></script>
+    <script>
+        // Código específico para a página de serviços
+        function initServicos() {
+            const vehicleInfo = document.getElementById('vehicleInfo');
+            const vehicleSelectContainer = document.getElementById('vehicleSelectContainer');
+            const vehicleSelect = document.getElementById('vehicleSelect');
+            const serviceForm = document.getElementById('serviceForm');
+            
+            // Elementos de informação do veículo
+            const clientNameElement = document.getElementById('clientName');
+            const vehiclePlateElement = document.getElementById('vehiclePlate');
+            const vehicleModelElement = document.getElementById('vehicleModel');
+            const vehicleYearElement = document.getElementById('vehicleYear');
+            
+            // Carrega os dados
+            const data = loadData();
+            
+            // Verifica se há um veículo selecionado na URL ou se estamos editando um serviço
+            const urlParams = new URLSearchParams(window.location.search);
+            const vehicleId = urlParams.get('vehicle');
+            const editServiceId = urlParams.get('edit');
+            
+            let selectedVehicle = null;
+            let serviceToEdit = null;
+            
+            // Verifica se estamos editando um serviço existente
+            if (editServiceId) {
+                console.log("Tentando editar serviço ID:", editServiceId);
+                serviceToEdit = data.services.find(s => s.id === parseInt(editServiceId));
+                console.log("Serviço encontrado:", serviceToEdit);
+                
+                if (serviceToEdit) {
+                    // Encontra o veículo associado ao serviço
+                    selectedVehicle = data.vehicles.find(v => v.id === serviceToEdit.vehicleId);
+                    console.log("Veículo encontrado:", selectedVehicle);
+                    
+                    // Preenche o formulário com os dados do serviço
+                    document.getElementById('serviceDate').value = serviceToEdit.date;
+                    document.getElementById('serviceWarranty').value = serviceToEdit.warranty || '';
+                    document.getElementById('serviceDescription').value = serviceToEdit.description;
+                    document.getElementById('serviceValue').value = (serviceToEdit.value || 0).toFixed(2).replace('.', ',');
+                    document.getElementById('serviceType').value = serviceToEdit.type || 'outro';
+                    document.getElementById('serviceDetails').value = serviceToEdit.details || '';
+                    
+                    // Muda o texto do botão de submit
+                    document.querySelector('#serviceForm button[type="submit"]').innerHTML = '<i class="fas fa-save me-2"></i>Atualizar Serviço';
+                    
+                    // Adiciona botão para excluir serviço
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.type = 'button';
+                    deleteBtn.className = 'btn btn-danger me-md-2';
+                    deleteBtn.innerHTML = '<i class="fas fa-trash-alt me-2"></i>Excluir Serviço';
+                    deleteBtn.addEventListener('click', function() {
+                        if (confirm('Tem certeza que deseja excluir este serviço?')) {
+                            // Remove o serviço
+                            data.services = data.services.filter(s => s.id !== serviceToEdit.id);
+                            
+                            // Salva os dados
+                            localStorage.setItem('systemData', JSON.stringify(data));
+                            
+                            alert('Serviço excluído com sucesso!');
+                            window.location.href = 'lista-servicos.html';
+                        }
+                    });
+                    
+                    // Adiciona o botão antes do botão de limpar
+                    const formButtons = document.querySelector('.d-grid.gap-2.d-md-flex');
+                    formButtons.insertBefore(deleteBtn, formButtons.firstChild);
+                } else {
+                    console.error("Serviço não encontrado com ID:", editServiceId);
+                    alert("Erro: Serviço não encontrado!");
+                }
+            
+            }
+            
+            if (selectedVehicle) {
+                // Se já temos um veículo selecionado (do serviço em edição ou da URL)
+                // Mostra as informações do veículo e esconde o seletor
+                vehicleInfo.style.display = 'block';
+                vehicleSelectContainer.style.display = 'none';
+                
+                // Preenche as informações do veículo
+                const client = data.clients.find(c => c.id === selectedVehicle.clientId);
+                clientNameElement.textContent = client ? client.name : 'Cliente não encontrado';
+                vehiclePlateElement.textContent = selectedVehicle.plate;
+                vehicleModelElement.textContent = selectedVehicle.model;
+                vehicleYearElement.textContent = selectedVehicle.year || '-';
+            } else if (vehicleId) {
+                // Busca o veículo pelo ID da URL
+                selectedVehicle = data.vehicles.find(v => v.id === parseInt(vehicleId));
+                
+                if (selectedVehicle) {
+                    // Mostra as informações do veículo e esconde o seletor
+                    vehicleInfo.style.display = 'block';
+                    vehicleSelectContainer.style.display = 'none';
+                    
+                    // Preenche as informações do veículo
+                    const client = data.clients.find(c => c.id === selectedVehicle.clientId);
+                    clientNameElement.textContent = client ? client.name : 'Cliente não encontrado';
+                    vehiclePlateElement.textContent = selectedVehicle.plate;
+                    vehicleModelElement.textContent = selectedVehicle.model;
+                    vehicleYearElement.textContent = selectedVehicle.year || '-';
+                } else {
+                    // Se o veículo não for encontrado, mostra o seletor
+                    vehicleInfo.style.display = 'none';
+                    vehicleSelectContainer.style.display = 'block';
+                }
+            } else {
+                // Se não houver veículo na URL, mostra o seletor
+                vehicleInfo.style.display = 'none';
+                vehicleSelectContainer.style.display = 'block';
+            }
+            
+            // Preenche o select com os veículos
+            data.vehicles.forEach(vehicle => {
+                const client = data.clients.find(c => c.id === vehicle.clientId);
+                const option = document.createElement('option');
+                option.value = vehicle.id;
+                option.textContent = `${vehicle.plate} - ${vehicle.model} (${client ? client.name : 'Cliente não encontrado'})`;
+                vehicleSelect.appendChild(option);
+            });
+            
+            // Evento de mudança no select de veículos
+            vehicleSelect.addEventListener('change', function() {
+                const vehicleId = parseInt(this.value);
+                if (vehicleId) {
+                    selectedVehicle = data.vehicles.find(v => v.id === vehicleId);
+                    
+                    // Preenche as informações do veículo
+                    const client = data.clients.find(c => c.id === selectedVehicle.clientId);
+                    clientNameElement.textContent = client ? client.name : 'Cliente não encontrado';
+                    vehiclePlateElement.textContent = selectedVehicle.plate;
+                    vehicleModelElement.textContent = selectedVehicle.model;
+                    vehicleYearElement.textContent = selectedVehicle.year || '-';
+                    
+                    // Mostra as informações do veículo
+                    vehicleInfo.style.display = 'block';
+                } else {
+                    // Se nenhum veículo for selecionado, esconde as informações
+                    vehicleInfo.style.display = 'none';
+                    selectedVehicle = null;
+                }
+            });
+            
+            // Define a data atual no campo de data do serviço
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('serviceDate').value = formattedDate;
+            
+            // Formata o campo de valor para moeda
+            const serviceValueInput = document.getElementById('serviceValue');
+            serviceValueInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value === '') {
+                    e.target.value = '';
+                    this.classList.add('is-invalid');
+                    return;
+                }
+                
+                value = (parseInt(value) / 100).toFixed(2);
+                e.target.value = value.replace('.', ',');
+                
+                // Validação visual do Bootstrap
+                if (parseFloat(value) > 0) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+            
+            // Sugestões de garantia baseadas no tipo de serviço
+            const serviceTypeSelect = document.getElementById('serviceType');
+            const serviceWarrantyInput = document.getElementById('serviceWarranty');
+            
+            serviceTypeSelect.addEventListener('change', function() {
+                const today = new Date();
+                let warrantyDate = new Date(today);
+                
+                switch(this.value) {
+                    case 'instalacao':
+                        // 12 meses de garantia para instalações
+                        warrantyDate.setMonth(today.getMonth() + 12);
+                        break;
+                    case 'manutencao':
+                    case 'reparo':
+                        // 6 meses para manutenções e reparos
+                        warrantyDate.setMonth(today.getMonth() + 6);
+                        break;
+                    case 'substituicao':
+                        // 9 meses para substituições
+                        warrantyDate.setMonth(today.getMonth() + 9);
+                        break;
+                    default:
+                        // 3 meses para outros serviços
+                        warrantyDate.setMonth(today.getMonth() + 3);
+                }
+                
+                serviceWarrantyInput.value = warrantyDate.toISOString().split('T')[0];
+            });
+            
+            // Ativa validação do Bootstrap
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                });
+            });
+            
+            // Evento de envio do formulário com validação
+            serviceForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Verifica se há um veículo selecionado
+                if (!selectedVehicle && !vehicleSelect.value) {
+                    // Usa toast do Bootstrap em vez de alert
+                    const toastContainer = document.createElement('div');
+                    toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+                    toastContainer.style.zIndex = '11';
+                    toastContainer.innerHTML = `
+                        <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    Por favor, selecione um veículo.
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(toastContainer);
+                    const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+                    toast.show();
+                    setTimeout(() => toastContainer.remove(), 5000);
+                    return;
+                }
+                
+                // Validação dos campos
+                const serviceDescription = document.getElementById('serviceDescription').value.trim();
+                const serviceValue = document.getElementById('serviceValue').value.trim();
+                
+                if (serviceDescription.length < 3) {
+                    document.getElementById('serviceDescription').classList.add('is-invalid');
+                    return;
+                } else {
+                    document.getElementById('serviceDescription').classList.remove('is-invalid');
+                    document.getElementById('serviceDescription').classList.add('is-valid');
+                }
+                
+                if (!serviceValue) {
+                    document.getElementById('serviceValue').classList.add('is-invalid');
+                    return;
+                } else {
+                    document.getElementById('serviceValue').classList.remove('is-invalid');
+                    document.getElementById('serviceValue').classList.add('is-valid');
+                }
+                
+                // Se não houver um veículo selecionado anteriormente, usa o do select
+                if (!selectedVehicle) {
+                    const vehicleId = parseInt(vehicleSelect.value);
+                    selectedVehicle = data.vehicles.find(v => v.id === vehicleId);
+                }
+                
+                // Converte o valor para número
+                const valueNumber = parseFloat(serviceValue.replace(',', '.'));
+                
+                // Se estamos editando um serviço existente
+                if (serviceToEdit) {
+                    // Atualiza os dados do serviço
+                    serviceToEdit.date = document.getElementById('serviceDate').value;
+                    serviceToEdit.description = serviceDescription;
+                    serviceToEdit.warranty = document.getElementById('serviceWarranty').value || null;
+                    serviceToEdit.details = document.getElementById('serviceDetails').value;
+                    serviceToEdit.value = valueNumber;
+                    serviceToEdit.type = document.getElementById('serviceType').value;
+                    
+                    // Mensagem de sucesso
+                    var successMessage = 'Serviço atualizado com sucesso!';
+                } else {
+                    // Cria um novo serviço
+                    const newService = {
+                        id: data.services.length > 0 ? Math.max(...data.services.map(s => s.id)) + 1 : 1,
+                        vehicleId: selectedVehicle.id,
+                        date: document.getElementById('serviceDate').value,
+                        description: serviceDescription,
+                        warranty: document.getElementById('serviceWarranty').value || null,
+                        details: document.getElementById('serviceDetails').value,
+                        value: valueNumber,
+                        type: document.getElementById('serviceType').value
+                    };
+                    
+                    // Adiciona o serviço aos dados
+                    data.services.push(newService);
+                    
+                    // Mensagem de sucesso
+                    var successMessage = 'Serviço registrado com sucesso!';
+                }
+                
+                // Salva os dados
+                localStorage.setItem('systemData', JSON.stringify(data));
+                
+                // Usa a função do fix-modals.js para mostrar o toast de sucesso
+                const warrantyDate = document.getElementById('serviceWarranty').value 
+                    ? new Date(document.getElementById('serviceWarranty').value).toLocaleDateString('pt-BR') 
+                    : 'Sem garantia';
+                
+                showSuccessToast(successMessage, {
+                    value: serviceValue,
+                    warranty: warrantyDate,
+                    actionUrl: `detalhes.html?id=${selectedVehicle.id}`,
+                    actionText: 'Ver Detalhes'
+                });
+                
+                // Limpa o formulário
+                serviceForm.reset();
+                document.getElementById('serviceDate').value = formattedDate;
+            });
+        }
+    </script>
+</body>
+</html>
