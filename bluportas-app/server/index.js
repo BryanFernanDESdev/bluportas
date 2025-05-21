@@ -2,16 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const createAdminUser = require('./config/adminUser');
 
 // Load environment variables
 dotenv.config();
-
-// Verify environment variables are loaded
-const mongoUri = process.env.MONGODB_URI;
-if (!mongoUri) {
-  console.error('MONGODB_URI is not defined in environment variables');
-  process.exit(1);
-}
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -42,6 +36,10 @@ app.get('/', (req, res) => {
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('Connected to MongoDB');
+    
+    // Criar usuário administrador padrão
+    createAdminUser();
+    
     // Start server
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);

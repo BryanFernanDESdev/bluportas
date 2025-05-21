@@ -23,6 +23,10 @@ const serviceSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  warranty: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true
