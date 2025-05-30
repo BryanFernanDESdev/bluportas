@@ -85,8 +85,19 @@ npm start
 
 - Correção na formatação de valores monetários
 - Interface de busca aprimorada
-- Assistente virtual "Senninha" para ajuda contextual
 - Melhorias de usabilidade no formulário de serviços
+
+## Assistente Virtual "Senninha"
+
+O sistema conta com um assistente virtual chamado "Senninha", inspirado no lendário piloto Ayrton Senna:
+
+- **Interação Contextual**: Oferece ajuda específica para cada seção do sistema
+- **Respostas Personalizadas**: Comunica-se de forma amigável e personalizada com o usuário
+- **Dicas e Sugestões**: Fornece dicas úteis sobre o uso do sistema
+- **Suporte Imediato**: Responde perguntas sobre como realizar tarefas específicas
+- **Personalidade Única**: Utiliza linguagem e referências ao mundo automobilístico e de corridas
+
+O Senninha funciona como um co-piloto para os usuários, tornando a experiência mais agradável e eficiente.
 
 ## Estrutura do Projeto
 
