@@ -11,6 +11,11 @@ const serviceSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  serviceType: {
+    type: String,
+    enum: ['alarm', 'powerWindows', 'centralLock', 'automaticDoors', 'other'],
+    default: 'other'
+  },
   status: {
     type: String,
     enum: ['pending', 'in_progress', 'completed', 'cancelled'],
@@ -27,6 +32,19 @@ const serviceSchema = new mongoose.Schema({
   warranty: {
     type: Date,
     default: null
+  },
+  warrantyPeriod: {
+    type: Number,
+    default: 90, // Dias de garantia
+    min: 0
+  },
+  technician: {
+    type: String,
+    trim: true
+  },
+  notes: {
+    type: String,
+    trim: true
   }
 }, {
   timestamps: true

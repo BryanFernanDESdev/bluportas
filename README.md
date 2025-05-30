@@ -1,101 +1,127 @@
-# BluPortas - Sistema de Controle de Clientes e Veículos
+# BluPortas - Sistema de Gerenciamento
 
-Sistema completo para gerenciamento de serviços automotivos, controle de veículos e acompanhamento de garantias.
+Sistema completo para gerenciamento de serviços automotivos da BluPortas, especializada em alarmes, vidros elétricos, travas e portas automáticas.
 
-## Funcionalidades
+## Funcionalidades Principais
 
-- Cadastro e gerenciamento de veículos
-- Registro e acompanhamento de serviços
-- Controle de garantias com alertas de vencimento
-- Dashboard com estatísticas e visão geral
-- Relatórios de faturamento
+- **Dashboard Interativo**: Visão geral de serviços, agendamentos e garantias
+- **Gerenciamento de Clientes**: Cadastro e histórico completo
+- **Controle de Veículos**: Registro detalhado com histórico de serviços
+- **Serviços e Garantias**: Acompanhamento de serviços realizados e controle de garantias
+- **Busca Inteligente**: Pesquisa rápida de clientes, veículos e serviços
+- **Formatação Monetária**: Suporte ao padrão brasileiro de moeda
 
-## Tecnologias
+## Tecnologias Utilizadas
 
-### Backend
-- Node.js
-- Express
-- MongoDB
-- JWT para autenticação
+- **Frontend**: React, CSS, React Router
+- **Backend**: Node.js, Express, MongoDB
+- **Autenticação**: JWT (JSON Web Tokens)
+- **Formatação**: Intl para formatação de moeda e datas
 
-### Frontend
-- React
-- Bootstrap 5
-- Font Awesome
-- Axios
+## Instalação e Execução
 
-## Instalação
-
-### Pré-requisitos
-- Node.js (v14+)
-- MongoDB (local ou MongoDB Atlas)
-
-### Configuração do Backend
-
+1. Clone o repositório:
 ```bash
-# Acesse a pasta do servidor
-cd bluportas-app/server
-
-# Instale as dependências
-npm install
-
-# Configure as variáveis de ambiente
-# Edite o arquivo .env com suas configurações
+git clone https://github.com/seu-usuario/bluportas.git
+cd bluportas
 ```
 
-### Configuração do Frontend
-
+2. Instale as dependências:
 ```bash
-# Acesse a pasta do cliente
-cd bluportas-app/client
+# Instalar dependências do projeto principal
+npm install
 
-# Instale as dependências
+# Instalar dependências do cliente
+cd bluportas-app/client
+npm install
+
+# Instalar dependências do servidor
+cd ../server
 npm install
 ```
 
-## Execução
+3. Configure as variáveis de ambiente:
+   - Crie um arquivo `.env` na pasta `/bluportas-app/server` com:
+   ```
+   PORT=5000
+   MONGODB_URI=sua_uri_do_mongodb
+   JWT_SECRET=seu_segredo_jwt
+   ```
 
-### Backend
+4. Inicie o projeto:
 ```bash
-cd bluportas-app/server
+# Iniciar servidor (na pasta server)
+npm start
+
+# Em outro terminal, iniciar cliente (na pasta client)
 npm start
 ```
 
-### Frontend
-```bash
-cd bluportas-app/client
-npm start
-```
+## Recursos Implementados
 
-Acesse o sistema em: http://localhost:3000
+### Dashboard
+- Estatísticas de serviços realizados
+- Alertas de garantias próximas do vencimento
+- Agendamentos do dia/semana
+- Busca inteligente unificada
 
-## Credenciais de Acesso
+### Clientes
+- Cadastro simplificado
+- Visualização de veículos associados
+- Histórico de serviços
 
-- **Email**: admin@bluportas.com
-- **Senha**: admin123
+### Veículos
+- Registro com informações detalhadas
+- Associação com proprietários
+- Histórico completo de serviços
+
+### Serviços
+- Categorização por tipo (alarme, vidro, trava, porta)
+- Controle de garantias com datas de vencimento
+- Formatação monetária no padrão brasileiro
+- Técnico responsável e observações
+
+## Melhorias Recentes
+
+- Correção na formatação de valores monetários
+- Interface de busca aprimorada
+- Assistente virtual "Senninha" para ajuda contextual
+- Melhorias de usabilidade no formulário de serviços
 
 ## Estrutura do Projeto
 
 ```
-bluportas-app/
-├── client/               # Frontend React
-│   ├── public/           # Arquivos estáticos
-│   └── src/              # Código fonte React
-│       ├── components/   # Componentes reutilizáveis
-│       ├── pages/        # Páginas da aplicação
-│       └── services/     # Serviços de API
+bluportas/
+├── bluportas-app/
+│   ├── client/               # Frontend React
+│   │   ├── public/           # Arquivos estáticos
+│   │   └── src/              # Código fonte React
+│   │       ├── components/   # Componentes reutilizáveis
+│   │       ├── pages/        # Páginas da aplicação
+│   │       ├── services/     # Serviços de API
+│   │       └── styles/       # Estilos CSS
+│   │
+│   └── server/               # Backend Node.js
+│       ├── config/           # Configurações
+│       ├── middleware/       # Middlewares Express
+│       ├── models/           # Modelos Mongoose
+│       └── routes/           # Rotas da API
 │
-└── server/               # Backend Node.js
-    ├── config/           # Configurações
-    ├── middleware/       # Middlewares Express
-    ├── models/           # Modelos Mongoose
-    └── routes/           # Rotas da API
+└── README.md                 # Este arquivo
 ```
+
+## Próximos Passos
+
+- Implementação de relatórios exportáveis
+- Sistema de notificações para garantias próximas do vencimento
+- Aplicativo móvel para técnicos em campo
+- Integração com sistemas de pagamento
+
+## Credenciais de Acesso (Desenvolvimento)
+
+- **Email**: admin@bluportas.com
+- **Senha**: admin123
 
 ## Licença
 
-Este projeto está licenciado sob a licença MIT.
-
-## Contato
-
-Para suporte ou dúvidas, entre em contato através do email: contato@bluportas.com
+Este projeto é proprietário e seu uso é restrito à BluPortas.

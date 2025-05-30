@@ -1,133 +1,176 @@
 const express = require('express');
+const router = express.Router();
 const Service = require('../models/Service');
 const Vehicle = require('../models/Vehicle');
 const auth = require('../middleware/auth');
-const router = express.Router();
 
-// Get all services
+// Obter todos os serviços
 router.get('/', auth, async (req, res) => {
   try {
-    // Find all vehicles owned by the user
-    const vehicles = await Vehicle.find({ owner: req.user._id });
-    const vehicleIds = vehicles.map(vehicle => vehicle._id);
-    
-    // Find all services for these vehicles
-    const services = await Service.find({ vehicle: { $in: vehicleIds } })
-      .populate('vehicle');
+    const services = await Service.find()
+      .populate({
+        path: 'vehicle',
+        populate: {
+          path: 'owner',
+          select: 'name email'
+        }
+      })
+      .sort({ date: -1 });
     
     res.json(services);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar serviços' });
   }
 });
 
-// Get service by ID
+// Obter serviço por ID
 router.get('/:id', auth, async (req, res) => {
   try {
     const service = await Service.findById(req.params.id)
-      .populate('vehicle');
+      .populate({
+        path: 'vehicle',
+        populate: {
+          path: 'owner',
+          select: 'name email'
+        }
+      });
     
     if (!service) {
-      return res.status(404).json({ message: 'Service not found' });
-    }
-    
-    // Check if the service belongs to a vehicle owned by the user
-    const vehicle = await Vehicle.findOne({ 
-      _id: service.vehicle._id, 
-      owner: req.user._id 
-    });
-    
-    if (!vehicle) {
-      return res.status(403).json({ message: 'Not authorized' });
+      return res.status(404).json({ message: 'Serviço não encontrado' });
     }
     
     res.json(service);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar serviço' });
   }
 });
 
-// Create new service
+// Obter serviços por veículo
+router.get('/vehicle/:vehicleId', auth, async (req, res) => {
+  try {
+    const services = await Service.find({ vehicle: req.params.vehicleId })
+      .sort({ date: -1 });
+    
+    res.json(services);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar serviços do veículo' });
+  }
+});
+
+// Criar novo serviço
 router.post('/', auth, async (req, res) => {
   try {
-    // Check if the vehicle belongs to the user
-    const vehicle = await Vehicle.findOne({ 
-      _id: req.body.vehicle, 
-      owner: req.user._id 
-    });
+    const { vehicle, description, price, status, date, warranty } = req.body;
     
-    if (!vehicle) {
-      return res.status(403).json({ message: 'Not authorized' });
+    // Verificar se o veículo existe
+    const vehicleExists = await Vehicle.findById(vehicle);
+    if (!vehicleExists) {
+      return res.status(404).json({ message: 'Veículo não encontrado' });
     }
     
-    const service = new Service(req.body);
-    await service.save();
+    const newService = new Service({
+      vehicle,
+      description,
+      price,
+      status: status || 'pending',
+      date: date || Date.now(),
+      warranty: warranty || null
+    });
     
-    res.status(201).json(service);
+    const savedService = await newService.save();
+    
+    res.status(201).json(savedService);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao criar serviço' });
   }
 });
 
-// Update service
+// Atualizar serviço
 router.put('/:id', auth, async (req, res) => {
   try {
+    const { vehicle, description, price, status, date, warranty } = req.body;
+    
+    // Verificar se o serviço existe
     const service = await Service.findById(req.params.id);
-    
     if (!service) {
-      return res.status(404).json({ message: 'Service not found' });
+      return res.status(404).json({ message: 'Serviço não encontrado' });
     }
     
-    // Check if the service belongs to a vehicle owned by the user
-    const vehicle = await Vehicle.findOne({ 
-      _id: service.vehicle, 
-      owner: req.user._id 
-    });
-    
-    if (!vehicle) {
-      return res.status(403).json({ message: 'Not authorized' });
+    // Verificar se o veículo existe
+    if (vehicle) {
+      const vehicleExists = await Vehicle.findById(vehicle);
+      if (!vehicleExists) {
+        return res.status(404).json({ message: 'Veículo não encontrado' });
+      }
     }
     
-    const updates = Object.keys(req.body);
-    const allowedUpdates = ['description', 'status', 'price', 'date'];
-    const isValidOperation = updates.every(update => allowedUpdates.includes(update));
+    const updatedService = await Service.findByIdAndUpdate(
+      req.params.id,
+      {
+        vehicle: vehicle || service.vehicle,
+        description: description || service.description,
+        price: price || service.price,
+        status: status || service.status,
+        date: date || service.date,
+        warranty: warranty || service.warranty
+      },
+      { new: true }
+    );
     
-    if (!isValidOperation) {
-      return res.status(400).json({ message: 'Invalid updates' });
-    }
-    
-    updates.forEach(update => service[update] = req.body[update]);
-    await service.save();
-    
-    res.json(service);
+    res.json(updatedService);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao atualizar serviço' });
   }
 });
 
-// Delete service
+// Excluir serviço
 router.delete('/:id', auth, async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
-    
     if (!service) {
-      return res.status(404).json({ message: 'Service not found' });
-    }
-    
-    // Check if the service belongs to a vehicle owned by the user
-    const vehicle = await Vehicle.findOne({ 
-      _id: service.vehicle, 
-      owner: req.user._id 
-    });
-    
-    if (!vehicle) {
-      return res.status(403).json({ message: 'Not authorized' });
+      return res.status(404).json({ message: 'Serviço não encontrado' });
     }
     
     await Service.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Service deleted successfully' });
+    
+    res.json({ message: 'Serviço excluído com sucesso' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao excluir serviço' });
+  }
+});
+
+// Obter serviços com garantia próxima do vencimento (30 dias)
+router.get('/warranty/ending', auth, async (req, res) => {
+  try {
+    const today = new Date();
+    const thirtyDaysFromNow = new Date();
+    thirtyDaysFromNow.setDate(today.getDate() + 30);
+    
+    const services = await Service.find({
+      warranty: {
+        $gte: today,
+        $lte: thirtyDaysFromNow
+      }
+    })
+    .populate({
+      path: 'vehicle',
+      populate: {
+        path: 'owner',
+        select: 'name email'
+      }
+    })
+    .sort({ warranty: 1 });
+    
+    res.json(services);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar serviços com garantia próxima do vencimento' });
   }
 });
 

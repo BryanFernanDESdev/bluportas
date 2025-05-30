@@ -2,13 +2,35 @@
 
 Sistema completo para gerenciamento de serviços automotivos, controle de veículos e acompanhamento de garantias.
 
-## Funcionalidades
+## Funcionalidades Implementadas
 
-- Cadastro e gerenciamento de veículos
-- Registro e acompanhamento de serviços
-- Controle de garantias com alertas de vencimento
+- Cadastro e gerenciamento de veículos (carros e vans)
+- Registro e acompanhamento de serviços com garantias
+- Cadastro simplificado de clientes
 - Dashboard com estatísticas e visão geral
-- Relatórios de faturamento
+- Interface interativa com formatação monetária brasileira
+
+## Páginas Principais
+
+### Dashboard
+- Visão geral do sistema
+- Estatísticas e informações rápidas
+
+### Veículos
+- Listagem com filtros e busca
+- Cadastro interativo com seleção visual de tipo e cor
+- Edição e exclusão de veículos
+
+### Serviços
+- Listagem com filtros por tipo e busca
+- Cadastro com seleção visual de tipo de serviço
+- Formatação monetária automática
+- Controle de garantias com cálculo de datas
+
+### Clientes
+- Cadastro simplificado (nome e telefone)
+- Visualização detalhada com veículos associados
+- Gerenciamento completo (adicionar, editar, excluir)
 
 ## Tecnologias
 
@@ -20,9 +42,8 @@ Sistema completo para gerenciamento de serviços automotivos, controle de veícu
 
 ### Frontend
 - React
-- Bootstrap 5
-- Font Awesome
-- Axios
+- CSS personalizado
+- Axios para comunicação com API
 
 ## Instalação
 
@@ -39,8 +60,10 @@ cd bluportas-app/server
 # Instale as dependências
 npm install
 
-# Configure as variáveis de ambiente
-# Edite o arquivo .env com suas configurações
+# Configure as variáveis de ambiente no arquivo .env
+PORT=5000
+MONGODB_URI=sua_uri_do_mongodb
+JWT_SECRET=seu_segredo_jwt
 ```
 
 ### Configuração do Frontend
@@ -83,7 +106,8 @@ bluportas-app/
 │   └── src/              # Código fonte React
 │       ├── components/   # Componentes reutilizáveis
 │       ├── pages/        # Páginas da aplicação
-│       └── services/     # Serviços de API
+│       ├── services/     # Serviços de API
+│       └── styles/       # Estilos CSS
 │
 └── server/               # Backend Node.js
     ├── config/           # Configurações
@@ -91,11 +115,3 @@ bluportas-app/
     ├── models/           # Modelos Mongoose
     └── routes/           # Rotas da API
 ```
-
-## Licença
-
-Este projeto está licenciado sob a licença MIT.
-
-## Contato
-
-Para suporte ou dúvidas, entre em contato através do email: contato@bluportas.com

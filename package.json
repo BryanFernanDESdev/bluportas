@@ -1,0 +1,17 @@
+{
+  "name": "bluportas",
+  "version": "1.0.0",
+  "description": "Sistema de gerenciamento para Blu Portas",
+  "main": "index.js",
+  "scripts": {
+    "client": "cd bluportas-app/client && npm start",
+    "server": "cd bluportas-app/server && npm start",
+    "install:client": "cd bluportas-app/client && npm install",
+    "install:server": "cd bluportas-app/server && npm install",
+    "install:all": "npm run install:client && npm run install:server",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

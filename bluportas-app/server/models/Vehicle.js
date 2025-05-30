@@ -22,10 +22,26 @@ const vehicleSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  color: {
+    type: String,
+    trim: true
+  },
+  chassis: {
+    type: String,
+    trim: true
+  },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
+  },
+  installedDevices: {
+    type: String,
+    trim: true
+  },
+  notes: {
+    type: String,
+    trim: true
   }
 }, {
   timestamps: true
